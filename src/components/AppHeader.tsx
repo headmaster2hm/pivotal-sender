@@ -1,11 +1,19 @@
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 
+type NavItem = "compose" | "history" | "inbox";
+
 type AppHeaderProps = {
   title: string;
   subtitle: string;
-  active: "compose" | "history";
+  active: NavItem;
 };
+
+const NAV_ITEMS: { id: NavItem; href: string; label: string }[] = [
+  { id: "compose", href: "/", label: "Compose" },
+  { id: "inbox", href: "/inbox", label: "Inbox" },
+  { id: "history", href: "/history", label: "Sent" },
+];
 
 export default function AppHeader({ title, subtitle, active }: AppHeaderProps) {
   return (
@@ -36,26 +44,19 @@ export default function AppHeader({ title, subtitle, active }: AppHeaderProps) {
 
       <div className="flex items-center gap-3">
         <nav className="flex rounded-lg border border-[var(--border)] bg-[var(--surface)] p-1 text-sm">
-          <Link
-            href="/"
-            className={`rounded-md px-3 py-1.5 font-medium transition-colors ${
-              active === "compose"
-                ? "bg-[var(--accent)] text-white"
-                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            }`}
-          >
-            Compose
-          </Link>
-          <Link
-            href="/history"
-            className={`rounded-md px-3 py-1.5 font-medium transition-colors ${
-              active === "history"
-                ? "bg-[var(--accent)] text-white"
-                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            }`}
-          >
-            History
-          </Link>
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={`rounded-md px-3 py-1.5 font-medium transition-colors ${
+                active === item.id
+                  ? "bg-[var(--accent)] text-white"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
         <ThemeToggle />
       </div>

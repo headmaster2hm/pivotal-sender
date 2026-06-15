@@ -68,3 +68,21 @@ export function validateFromDomain(
 
   return null;
 }
+
+export function matchesAllowedDomain(
+  address: string,
+  allowedDomain: string,
+): boolean {
+  if (!allowedDomain.trim()) return true;
+
+  const domain = getEmailDomain(address);
+  return domain === allowedDomain.trim().toLowerCase();
+}
+
+export function matchesAllowedDomainList(
+  addresses: string[],
+  allowedDomain: string,
+): boolean {
+  if (!allowedDomain.trim()) return true;
+  return addresses.some((address) => matchesAllowedDomain(address, allowedDomain));
+}
