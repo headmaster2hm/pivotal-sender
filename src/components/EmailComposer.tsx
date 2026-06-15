@@ -2,7 +2,7 @@
 
 import { FormEvent, useRef, useState } from "react";
 import RichTextEditor from "@/components/RichTextEditor";
-import { validateEmailList } from "@/lib/email-utils";
+import { validateEmailList, validateFromDomain } from "@/lib/email-utils";
 
 type AttachmentFile = {
   id: string;
@@ -16,6 +16,8 @@ type SendStatus =
   | { type: "error"; message: string };
 
 const MAX_ATTACHMENT_SIZE = 40 * 1024 * 1024;
+const ALLOWED_FROM_DOMAIN =
+  process.env.NEXT_PUBLIC_ALLOWED_FROM_DOMAIN?.trim() || "";
 
 const inputClass =
   "w-full rounded-lg border border-[var(--border)] bg-[var(--input-bg)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition focus:border-[var(--accent)] focus:bg-[var(--input-focus-bg)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-glow)]";
@@ -114,6 +116,7 @@ export default function EmailComposer() {
 
     const validationErrors = [
       validateEmailList(fromEmail, "from"),
+      validateFromDomain(fromEmail, ALLOWED_FROM_DOMAIN),
       validateEmailList(to, "To"),
       validateEmailList(cc, "CC"),
       validateEmailList(bcc, "BCC"),
@@ -221,10 +224,19 @@ export default function EmailComposer() {
                 type="email"
                 value={fromEmail}
                 onChange={(e) => setFromEmail(e.target.value)}
-                placeholder="you@yourdomain.com"
+                placeholder={
+                  ALLOWED_FROM_DOMAIN
+                    ? `you@${ALLOWED_FROM_DOMAIN}`
+                    : "you@yourdomain.com"
+                }
                 required
                 className={inputClass}
               />
+              {ALLOWED_FROM_DOMAIN && (
+                <p className="mt-1.5 text-xs text-[var(--text-muted)]">
+                  Only @{ALLOWED_FROM_DOMAIN} addresses are allowed
+                </p>
+              )}
             </div>
             <div>
               <Label htmlFor="fromName">Display name</Label>

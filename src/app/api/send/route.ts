@@ -3,6 +3,7 @@ import {
   formatFromAddress,
   isValidEmail,
   parseEmailList,
+  validateFromDomain,
 } from "@/lib/email-utils";
 import { getResendClient } from "@/lib/resend";
 
@@ -56,6 +57,12 @@ export async function POST(request: NextRequest) {
         { error: "From email address is invalid" },
         { status: 400 },
       );
+    }
+
+    const allowedFromDomain = process.env.ALLOWED_FROM_DOMAIN?.trim() || "";
+    const fromDomainError = validateFromDomain(fromEmail, allowedFromDomain);
+    if (fromDomainError) {
+      return NextResponse.json({ error: fromDomainError }, { status: 400 });
     }
 
     const toList = parseEmailList(to || "");

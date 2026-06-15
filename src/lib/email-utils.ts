@@ -32,3 +32,32 @@ export function formatFromAddress(name: string, email: string): string {
   if (!trimmedName) return trimmedEmail;
   return `${trimmedName} <${trimmedEmail}>`;
 }
+
+export function getEmailDomain(email: string): string | null {
+  const match = email.trim().toLowerCase().match(/^[^\s@]+@([^\s@]+)$/);
+  return match ? match[1] : null;
+}
+
+export function isAllowedFromDomain(
+  email: string,
+  allowedDomain: string,
+): boolean {
+  const domain = getEmailDomain(email);
+  const normalizedAllowed = allowedDomain.trim().toLowerCase();
+
+  if (!domain || !normalizedAllowed) return false;
+  return domain === normalizedAllowed;
+}
+
+export function validateFromDomain(
+  email: string,
+  allowedDomain: string,
+): string | null {
+  if (!allowedDomain.trim()) return null;
+
+  if (!isAllowedFromDomain(email, allowedDomain)) {
+    return `From address must use @${allowedDomain.trim().toLowerCase()}`;
+  }
+
+  return null;
+}

@@ -21,8 +21,12 @@ npm install
 
 ```env
 RESEND_API_KEY=re_your_api_key_here
-NEXT_PUBLIC_DEFAULT_FROM_EMAIL=you@your-verified-domain.com
+ALLOWED_FROM_DOMAIN=pivotalphilanthropyprogram.com
+NEXT_PUBLIC_DEFAULT_FROM_EMAIL=contactus@pivotalphilanthropyprogram.com
+NEXT_PUBLIC_ALLOWED_FROM_DOMAIN=pivotalphilanthropyprogram.com
 ```
+
+Only `@pivotalphilanthropyprogram.com` addresses are accepted in the From field. Any other domain is rejected by the API.
 
 3. Start the dev server:
 
