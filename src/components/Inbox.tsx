@@ -5,6 +5,10 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { formatDateTime } from "@/lib/email-history";
 import { parseEmailAddress } from "@/lib/email-utils";
 import {
+  filterDeletedInboxEmails,
+  markInboxEmailDeleted,
+} from "@/lib/inbox-deleted-client";
+import {
   type InboxDetail,
   type InboxItem,
   type InboxListResponse,
@@ -122,13 +126,14 @@ export default function Inbox() {
         fetch("/api/inbox/status").then((res) => res.json()),
       ]);
 
-      setEmails(inboxData.emails);
+      const visibleEmails = filterDeletedInboxEmails(inboxData.emails);
+      setEmails(visibleEmails);
       setHasMore(inboxData.has_more);
       setSetupStatus(statusResponse as InboxSetupStatus);
 
       if (
         selectedId &&
-        !inboxData.emails.some((email) => email.id === selectedId)
+        !visibleEmails.some((email) => email.id === selectedId)
       ) {
         setSelectedId(null);
         setDetail(null);
@@ -153,7 +158,9 @@ export default function Inbox() {
     try {
       const lastId = emails[emails.length - 1]?.id;
       const data = await fetchInbox(lastId);
-      setEmails((prev) => [...prev, ...data.emails]);
+      setEmails((prev) =>
+        filterDeletedInboxEmails([...prev, ...data.emails]),
+      );
       setHasMore(data.has_more);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load more emails");
@@ -204,6 +211,7 @@ export default function Inbox() {
         throw new Error(data.error || "Failed to delete message");
       }
 
+      markInboxEmailDeleted(selectedId);
       setEmails((prev) => prev.filter((email) => email.id !== selectedId));
       setSelectedId(null);
       setDetail(null);

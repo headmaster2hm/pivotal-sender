@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { matchesAllowedDomainList } from "@/lib/email-utils";
 import type { InboxItem } from "@/lib/inbox";
-import { getDeletedInboxIds } from "@/lib/inbox-deleted";
 import { getResendClient } from "@/lib/resend";
 
 export const runtime = "nodejs";
@@ -39,10 +38,7 @@ export async function GET(request: NextRequest) {
     }
 
     const allowedDomain = process.env.ALLOWED_FROM_DOMAIN?.trim().toLowerCase() || "";
-    const deletedIds = await getDeletedInboxIds();
-    const emails = filterByInboxDomain(data?.data ?? [], allowedDomain).filter(
-      (email) => !deletedIds.has(email.id),
-    );
+    const emails = filterByInboxDomain(data?.data ?? [], allowedDomain);
 
     return NextResponse.json({
       emails,

@@ -7,7 +7,6 @@ import {
   parseEmailAddress,
   validateFromDomain,
 } from "@/lib/email-utils";
-import { markInboxEmailDeleted } from "@/lib/inbox-deleted";
 import { replySubject } from "@/lib/inbox";
 import { getResendClient } from "@/lib/resend";
 
@@ -68,8 +67,6 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
         { status: result.status },
       );
     }
-
-    await markInboxEmailDeleted(id);
 
     return NextResponse.json({
       success: true,

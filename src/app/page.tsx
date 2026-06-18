@@ -1,4 +1,5 @@
 import AppHeader from "@/components/AppHeader";
+import DomainHealthBanner from "@/components/DomainHealthBanner";
 import EmailComposer from "@/components/EmailComposer";
 
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
           subtitle="Compose and send with Resend"
           active="compose"
         />
+        <DomainHealthBanner />
         <EmailComposer />
       </div>
     </div>
