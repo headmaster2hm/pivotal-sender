@@ -1,5 +1,4 @@
 import AppHeader from "@/components/AppHeader";
-import DomainHealthBanner from "@/components/DomainHealthBanner";
 import Inbox from "@/components/Inbox";
 
 export default function InboxPage() {
@@ -11,7 +10,6 @@ export default function InboxPage() {
           subtitle="Inbox for your domain"
           active="inbox"
         />
-        <DomainHealthBanner />
         <Inbox />
       </div>
     </div>
